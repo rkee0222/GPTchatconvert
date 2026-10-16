@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="light" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"
+    />
+    <meta
+      name="description"
+      content="ChatGPT 내보내기 ZIP에서 대화를 골라 PDF로 저장합니다. 파일은 기기 안에서만 처리됩니다."
+    />
+    <title>대화 한 권 · ChatGPT PDF</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <a class="brand" href="./"
+          ><span class="brand-icon" aria-hidden="true">▤</span> 대화 한 권</a
+        ><span class="local-badge"><span></span> 내 기기에서만 처리</span>
+      </header>
+      <main class="workspace">
+        <section class="intro" id="intro">
+          <div class="eyebrow">CHATGPT → PDF</div>
+          <h1>기억하고 싶은 대화,<br /><em>한 권의 문서로.</em></h1>
+          <p>
+            내보낸 ZIP 파일에서 대화를 고르고,<br />읽기 편한 PDF로 간직하세요.
+          </p>
+        </section>
+        <section class="upload-panel" aria-labelledby="upload-title">
+          <div class="upload-symbol" aria-hidden="true">
+            <svg
+              width="26"
+              height="26"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 16V3m-5 5 5-5 5 5M4 15v5h16v-5" />
+            </svg>
+          </div>
+          <div class="upload-copy">
+            <h2 id="upload-title">ChatGPT 내보내기 파일 열기</h2>
+            <p id="file-description">
+              ZIP 파일을 선택하세요. 파일과 대화는 서버로 전송되지 않습니다.
+            </p>
+          </div>
+          <label class="button primary file-button" for="zip-file"
+            >ZIP 파일 선택<span class="sr-only">
+              (ChatGPT 내보내기)</span
+            ></label
+          ><input
+            id="zip-file"
+            type="file"
+            accept=".zip,application/zip,application/x-zip-compressed"
+          />
+          <div
+            class="upload-status"
+            id="upload-status"
+            role="status"
+            aria-live="polite"
+          ></div>
+          <progress
+            id="progress"
+            hidden
+            max="100"
+            aria-label="ZIP 읽기 진행률"
+          ></progress>
+        </section>
+        <div class="error-banner" id="error" role="alert" hidden></div>
+        <div class="reader-layout" id="reader" hidden>
+          <aside class="conversation-panel" aria-labelledby="list-title">
+            <div class="panel-heading">
+              <h2 id="list-title">대화 목록</h2>
+              <span id="conversation-count" class="count"></span>
+            </div>
+            <label class="search-label" for="search">제목으로 검색</label
+            ><input
+              id="search"
+              type="search"
+              placeholder="대화 제목 검색…"
+              autocomplete="off"
+            />
+            <div id="search-count" class="search-count" role="status"></div>
+            <div id="conversation-list" class="conversation-list"></div>
+            <button class="button subtle" id="load-more" hidden>더 보기</button>
+          </aside>
+          <section class="preview-panel" aria-label="선택한 대화 미리보기">
+            <div class="preview-toolbar">
+              <span class="preview-label">문서 미리보기</span
+              ><button class="button primary" id="print" disabled>
+                PDF로 저장 <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <div id="branch-panel" class="branch-panel" hidden>
+              <label for="branch">대화 경로</label
+              ><select id="branch"></select>
+              <p id="branch-help"></p>
+            </div>
+            <div class="print-help">
+              Windows: 인쇄 대상에서 ‘PDF로 저장’을 선택하세요. iPhone·iPad:
+              인쇄 미리보기를 확대하거나 공유 버튼을 눌러 ‘파일에 저장’하세요.
+              Safari 버전에 따라 순서가 다릅니다.
+            </div>
+            <div
+              id="render-status"
+              class="render-status"
+              role="status"
+              aria-live="polite"
+            ></div>
+            <div id="empty-preview" class="empty-preview">
+              <span aria-hidden="true">▤</span>
+              <h2>어떤 대화를 간직할까요?</h2>
+              <p>왼쪽 목록에서 대화 하나를 선택해 주세요.</p>
+            </div>
+            <article id="document" class="document" hidden></article>
+          </section>
+        </div>
+        <section class="how-to" id="how-to">
+          <div>
+            <span>01</span>
+            <h3>내보내기</h3>
+            <p>
+              ChatGPT 설정 → 데이터 제어에서<br />데이터 내보내기를 요청하세요.
+            </p>
+          </div>
+          <div>
+            <span>02</span>
+            <h3>대화 고르기</h3>
+            <p>받은 ZIP 파일을 열고<br />원하는 제목을 검색하세요.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <h3>PDF로 간직하기</h3>
+            <p>미리보기를 확인한 뒤<br />브라우저 인쇄로 저장하세요.</p>
+          </div>
+        </section>
+        <footer>
+          대화 내용은 이 브라우저를 벗어나지 않습니다.
+          <span>새로고침하면 불러온 데이터가 사라집니다.</span>
+        </footer>
+      </main>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
